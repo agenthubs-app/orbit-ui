@@ -42,8 +42,8 @@ import {
 } from "./content";
 
 function App() {
-  const [theme, setTheme] = useState<Theme>("dark");
-  const [locale, setLocale] = useState<Locale>("en");
+  const [theme, setTheme] = useState<Theme>("light");
+  const [locale, setLocale] = useState<Locale>("zh");
   const [activeSection, setActiveSection] = useState<SectionId>("ai");
   const [aiResult, setAiResult] = useState<AiResultMode>("idle");
   const t = copy[locale];

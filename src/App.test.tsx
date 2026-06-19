@@ -9,65 +9,64 @@ describe("Orbit UI framework", () => {
     document.documentElement.lang = "en";
   });
 
-  it("renders the dark AI-chat-first shell with Orbit navigation", () => {
+  it("renders the bright Chinese AI-chat-first shell with Orbit navigation", () => {
     render(<App />);
 
-    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(document.documentElement).toHaveAttribute("data-theme", "light");
+    expect(document.documentElement.lang).toBe("zh-CN");
     expect(screen.getByRole("banner")).toHaveTextContent("Orbit Control");
     expect(screen.getByRole("navigation", { name: "Primary" })).toHaveTextContent("Orbit AI");
-    expect(screen.getByRole("navigation", { name: "Primary" })).toHaveTextContent("Events");
-    expect(screen.getByRole("navigation", { name: "Primary" })).toHaveTextContent("People");
-    expect(screen.getByRole("navigation", { name: "Primary" })).toHaveTextContent("Connections");
-    expect(screen.getByRole("navigation", { name: "Primary" })).toHaveTextContent("Analytics");
+    expect(screen.getByRole("navigation", { name: "Primary" })).toHaveTextContent("活动");
+    expect(screen.getByRole("navigation", { name: "Primary" })).toHaveTextContent("人脉");
+    expect(screen.getByRole("navigation", { name: "Primary" })).toHaveTextContent("名片夹");
+    expect(screen.getByRole("navigation", { name: "Primary" })).toHaveTextContent("分析");
     expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Ask Orbit AI" })).toBeInTheDocument();
-    expect(screen.getByRole("log", { name: "Orbit AI conversation" })).toHaveTextContent("What are you trying to achieve in Tokyo?");
-    expect(screen.getByRole("complementary", { name: "AI results panel" })).toHaveTextContent("Ask for events, people, or network analysis to open a live panel here.");
-    expect(screen.getByRole("region", { name: "Live relationship orbit" })).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "Executive user at orbit center" })).toBeInTheDocument();
+    expect(screen.queryByText("仪表盘")).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "询问 Orbit AI" })).toBeInTheDocument();
+    expect(screen.getByRole("log", { name: "Orbit AI conversation" })).toHaveTextContent("你想在东京达成什么？");
+    expect(screen.getByRole("complementary", { name: "AI 结果面板" })).toHaveTextContent("询问活动、人脉或网络分析后，这里会打开实时面板。");
+    expect(screen.getByRole("region", { name: "实时关系轨道" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "轨道中心的用户头像" })).toBeInTheDocument();
     expect(screen.getAllByTestId("orbiting-contact")).toHaveLength(6);
   });
 
-  it("switches to the bright theme without changing the product shell", async () => {
+  it("switches to the dark theme without changing the Chinese product shell", async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "Bright" }));
+    await user.click(screen.getByRole("button", { name: "深色" }));
 
-    expect(document.documentElement).toHaveAttribute("data-theme", "light");
-    expect(screen.getByRole("heading", { name: "Ask Orbit AI" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Dark" })).toBeInTheDocument();
+    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(screen.getByRole("heading", { name: "询问 Orbit AI" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "明亮" })).toBeInTheDocument();
   });
 
   it("opens recommended events from the AI chat", async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "Recommend events" }));
+    await user.click(screen.getByRole("button", { name: "推荐活动" }));
 
-    const results = screen.getByRole("complementary", { name: "AI results panel" });
-    expect(within(results).getByRole("heading", { name: "Recommended Events" })).toBeInTheDocument();
+    const results = screen.getByRole("complementary", { name: "AI 结果面板" });
+    expect(within(results).getByRole("heading", { name: "推荐活动" })).toBeInTheDocument();
     expect(results).toHaveTextContent("AI Infrastructure Summit");
-    expect(screen.getByRole("log", { name: "Orbit AI conversation" })).toHaveTextContent("I found 3 high-signal events");
+    expect(screen.getByRole("log", { name: "Orbit AI conversation" })).toHaveTextContent("找到了 3 个高信号活动");
   });
 
   it("opens people recommendations from the AI chat", async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "Recommend people" }));
+    await user.click(screen.getByRole("button", { name: "推荐人脉" }));
 
-    const results = screen.getByRole("complementary", { name: "AI results panel" });
-    expect(within(results).getByRole("heading", { name: "People Recommendations" })).toBeInTheDocument();
+    const results = screen.getByRole("complementary", { name: "AI 结果面板" });
+    expect(within(results).getByRole("heading", { name: "人脉推荐" })).toBeInTheDocument();
     expect(results).toHaveTextContent("David Lin");
-    expect(screen.getByRole("log", { name: "Orbit AI conversation" })).toHaveTextContent("I ranked people by business fit");
+    expect(screen.getByRole("log", { name: "Orbit AI conversation" })).toHaveTextContent("排序了最可能产生有效对话的人");
   });
 
-  it("localizes the shell and AI chat content to Chinese", async () => {
-    const user = userEvent.setup();
+  it("keeps the shell and AI chat content localized to Chinese by default", async () => {
     render(<App />);
-
-    await user.click(screen.getByRole("button", { name: "中文" }));
 
     expect(document.documentElement.lang).toBe("zh-CN");
     expect(screen.getByRole("heading", { name: "询问 Orbit AI" })).toBeInTheDocument();
@@ -79,7 +78,6 @@ describe("Orbit UI framework", () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole("button", { name: "中文" }));
     await user.click(screen.getByRole("button", { name: "分析网络" }));
 
     const results = screen.getByRole("complementary", { name: "AI 结果面板" });
